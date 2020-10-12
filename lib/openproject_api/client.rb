@@ -35,5 +35,15 @@ module OpenprojectApi
 				Net::HTTP::Get.new(uri.request_uri)
 			end
 		end
+		
+		def patch(resource, body, *args)
+			request(resource, *args) do |uri|
+				Net::HTTP::Patch.new(uri.request_uri).tap do |request|
+					request['Content-Type'] = 'application/json'
+					request['Accept'      ] = 'application/json'
+					request.body            = body.to_json
+				end
+			end
+		end
 	end
 end
