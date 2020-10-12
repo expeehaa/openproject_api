@@ -49,6 +49,14 @@ module OpenprojectApi
 				get("/api/v3/work_packages/#{work_package_id}/available_watchers", *args)
 			end
 			
+			def work_package_activities(work_package_id, *args)
+				get("/api/v3/work_packages/#{work_package_id}/activities", *args)
+			end
+			
+			def add_work_package_activity(work_package_id, body, *args)
+				post("/api/v3/work_packages/#{work_package_id}/activities", body, *args)
+			end
+			
 			def work_package_available_assignees(work_package_id, *args)
 				get("/api/v3/work_packages/#{work_package_id}/available_assignees", *args)
 			end
