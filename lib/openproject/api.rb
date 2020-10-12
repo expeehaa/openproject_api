@@ -1,8 +1,7 @@
-require "openproject/api/version"
+require 'openproject/api/version'
 
 module Openproject
-  module Api
-    class Error < StandardError; end
-    # Your code goes here...
-  end
+	module Api
+		class Error < StandardError; end
+	end
 end
