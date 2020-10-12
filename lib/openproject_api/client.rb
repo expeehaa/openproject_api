@@ -36,6 +36,16 @@ module OpenprojectApi
 			end
 		end
 		
+		def post(resource, body, *args)
+			request(resource, *args) do |uri|
+				Net::HTTP::Post.new(uri.request_uri).tap do |request|
+					request['Content-Type'] = 'application/json'
+					request['Accept'      ] = 'application/json'
+					request.body            = body.to_json
+				end
+			end
+		end
+		
 		def patch(resource, body, *args)
 			request(resource, *args) do |uri|
 				Net::HTTP::Patch.new(uri.request_uri).tap do |request|
