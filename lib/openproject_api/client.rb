@@ -6,6 +6,7 @@ module OpenprojectApi
 			require f
 		end
 		
+		include Projects
 		include Statuses
 		include TimeEntries
 		include Types
