@@ -1,5 +1,6 @@
 require 'uri'
 require 'net/https'
+require_relative 'objectified_hash'
 
 module OpenprojectApi
 	class Api
@@ -24,7 +25,7 @@ module OpenprojectApi
 			end
 			
 			if response.is_a?(Net::HTTPSuccess)
-				JSON.parse(response.body)
+				ObjectifiedHash.new(JSON.parse(response.body))
 			else
 				response.error!
 			end
