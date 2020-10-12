@@ -8,6 +8,7 @@ module OpenprojectApi
 		
 		include Statuses
 		include TimeEntries
+		include Types
 		include WorkPackages
 	end
 end
