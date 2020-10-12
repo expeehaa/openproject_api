@@ -48,6 +48,14 @@ module OpenprojectApi
 			def work_package_available_watchers(work_package_id, *args)
 				get("/api/v3/work_packages/#{work_package_id}/available_watchers", *args)
 			end
+			
+			def work_package_available_assignees(work_package_id, *args)
+				get("/api/v3/work_packages/#{work_package_id}/available_assignees", *args)
+			end
+			
+			def work_package_available_responsibles(work_package_id, *args)
+				get("/api/v3/work_packages/#{work_package_id}/available_responsibles", *args)
+			end
 		end
 	end
 end
