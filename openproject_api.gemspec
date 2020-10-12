@@ -1,8 +1,8 @@
-require_relative 'lib/openproject/api/version'
+require_relative 'lib/openproject_api/version'
 
 Gem::Specification.new do |spec|
-	spec.name          = 'openproject-api'
-	spec.version       = Openproject::Api::VERSION
+	spec.name          = 'openproject_api'
+	spec.version       = OpenprojectApi::VERSION
 	spec.authors       = ['expeehaa']
 	spec.email         = ['expeehaa@outlook.com']
 
