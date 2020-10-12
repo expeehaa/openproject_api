@@ -17,6 +17,10 @@ module OpenprojectApi
 				post('/api/v3/time_entries', body, *args)
 			end
 			
+			def delete_time_entry(time_entry_id, *args)
+				delete("/api/v3/time_entries/#{time_entry_id}", *args)
+			end
+			
 			def time_entries_available_projects(*args)
 				get('/api/v3/time_entries/available_projects', *args)
 			end

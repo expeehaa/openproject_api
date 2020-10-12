@@ -17,6 +17,10 @@ module OpenprojectApi
 				post('/api/v3/work_packages', body, *args)
 			end
 			
+			def delete_work_package(work_package_id, *args)
+				delete("/api/v3/work_packages/#{work_package_id}", *args)
+			end
+			
 			def work_package_relations(work_package_id, *args)
 				get("/api/v3/work_packages/#{work_package_id}/relations", *args)
 			end
