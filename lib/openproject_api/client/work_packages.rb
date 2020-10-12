@@ -32,6 +32,22 @@ module OpenprojectApi
 			def work_package_available_relation_candidates(work_package_id, *args)
 				get("/api/v3/work_packages/#{work_package_id}/available_relation_candidates", *args)
 			end
+			
+			def work_package_watchers(work_package_id, *args)
+				get("/api/v3/work_packages/#{work_package_id}/watchers", *args)
+			end
+			
+			def add_work_package_watcher(work_package_id, body, *args)
+				post("/api/v3/work_packages/#{work_package_id}/watchers", body, *args)
+			end
+			
+			def delete_work_package_watcher(work_package_id, watcher_id, *args)
+				get("/api/v3/work_packages/#{work_package_id}/watchers/#{watcher_id}", *args)
+			end
+			
+			def work_package_available_watchers(work_package_id, *args)
+				get("/api/v3/work_packages/#{work_package_id}/available_watchers", *args)
+			end
 		end
 	end
 end
