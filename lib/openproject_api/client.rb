@@ -29,5 +29,11 @@ module OpenprojectApi
 				response.error!
 			end
 		end
+		
+		def get(resource, *args)
+			request(resource, *args) do |uri|
+				Net::HTTP::Get.new(uri.request_uri)
+			end
+		end
 	end
 end
