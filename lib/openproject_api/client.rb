@@ -5,7 +5,8 @@ module OpenprojectApi
 		Dir[File.expand_path('client/*.rb', __dir__)].each do |f|
 			require f
 		end
-
+		
+		include TimeEntries
 		include WorkPackages
 	end
 end
