@@ -56,5 +56,11 @@ module OpenprojectApi
 				end
 			end
 		end
+		
+		def delete(resource, *args)
+			request(resource, *args) do |uri|
+				Net::HTTP::Delete.new(uri.request_uri)
+			end
+		end
 	end
 end
