@@ -9,7 +9,7 @@ module OpenprojectApi
 				get("/api/v3/users/#{user_id}", *args)
 			end
 			
-			def patch_user(user_id, body, *args)
+			def update_user(user_id, body, *args)
 				patch("/api/v3/users/#{user_id}", body, *args)
 			end
 			

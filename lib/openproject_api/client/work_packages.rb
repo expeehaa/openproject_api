@@ -9,7 +9,7 @@ module OpenprojectApi
 				get("/api/v3/work_packages/#{work_package_id}", *args)
 			end
 			
-			def patch_work_package(work_package_id, body, *args)
+			def update_work_package(work_package_id, body, *args)
 				patch("/api/v3/work_packages/#{work_package_id}", body, *args)
 			end
 			

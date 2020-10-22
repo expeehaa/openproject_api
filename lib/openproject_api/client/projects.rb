@@ -9,7 +9,7 @@ module OpenprojectApi
 				get("/api/v3/projects/#{project_id}", *args)
 			end
 			
-			def patch_project(project_id, body, *args)
+			def update_project(project_id, body, *args)
 				patch("/api/v3/projects/#{project_id}", body, *args)
 			end
 			
