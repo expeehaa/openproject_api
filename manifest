@@ -14,4 +14,4 @@ lib/openproject_api.rb
 Gemfile
 Gemfile.lock
 Rakefile
-files.txt
+manifest

@@ -5,6 +5,6 @@ RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
 
-task :generate_files do
-	File.write(File.expand_path('files.txt', __dir__), Dir['lib/**/*', 'Gemfile', 'Gemfile.lock', 'openproject-api.gemspec', 'Rakefile', 'files.txt'].join("\n"))
+task :update_manifest do
+	File.write(File.expand_path('manifest', __dir__), Dir['lib/**/*', 'Gemfile', 'Gemfile.lock', 'openproject-api.gemspec', 'Rakefile', 'manifest'].join("\n"))
 end
