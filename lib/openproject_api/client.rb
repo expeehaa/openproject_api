@@ -10,6 +10,7 @@ module OpenprojectApi
 		include Statuses
 		include TimeEntries
 		include Types
+		include UserPreferences
 		include Users
 		include WorkPackages
 	end
