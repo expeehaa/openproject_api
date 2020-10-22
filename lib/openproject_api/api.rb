@@ -1,5 +1,6 @@
 require 'uri'
 require 'net/https'
+require 'json'
 require_relative 'objectified_hash'
 
 module OpenprojectApi
