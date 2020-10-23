@@ -7,6 +7,7 @@ module OpenprojectApi
 		end
 		
 		include Projects
+		include Relations
 		include Root
 		include Statuses
 		include TimeEntries
