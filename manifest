@@ -8,6 +8,7 @@ lib/openproject_api/client/time_entries.rb
 lib/openproject_api/client/projects.rb
 lib/openproject_api/client/user_preferences.rb
 lib/openproject_api/client/root.rb
+lib/openproject_api/client/relations.rb
 lib/openproject_api/objectified_hash.rb
 lib/openproject_api/api.rb
 lib/openproject_api/version.rb
