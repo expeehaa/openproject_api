@@ -1,4 +1,4 @@
-require_relative 'lib/openproject_api/version'
+require File.expand_path('lib/openproject_api/version', __dir__)
 
 Gem::Specification.new do |spec|
 	spec.name          = 'openproject_api'
