@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
 	spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
-	spec.files         = File.read(File.expand_path('manifest', __dir__)).split("\n")
+	spec.files         = Dir['lib/**/*.rb', 'readme.adoc']
 	spec.bindir        = 'exe'
 	spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
 	spec.require_paths = ['lib']
