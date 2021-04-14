@@ -1,6 +1,5 @@
-# Slightly modified version from https://github.com/NARKOZ/gitlab/blob/3dd41722670570069693cc9b84c73f475d95e6be/lib/gitlab/objectified_hash.rb
-
 module OpenprojectApi
+	# Slightly modified version from https://github.com/NARKOZ/gitlab/blob/3dd41722670570069693cc9b84c73f475d95e6be/lib/gitlab/objectified_hash.rb
   class ObjectifiedHash
     def initialize(hash)
       @hash = hash
