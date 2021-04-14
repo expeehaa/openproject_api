@@ -1,7 +1,8 @@
 require 'uri'
 require 'net/https'
 require 'json'
-require_relative 'objectified_hash'
+
+require 'openproject_api/objectified_hash'
 
 module OpenprojectApi
 	class Api

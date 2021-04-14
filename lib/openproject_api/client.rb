@@ -1,4 +1,4 @@
-require_relative 'api'
+require 'openproject_api/api'
 
 module OpenprojectApi
 	class Client < Api
