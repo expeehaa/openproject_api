@@ -31,8 +31,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (~> 1.17)
   openproject_api!
-  pry
+  pry (~> 0.13)
   rake (~> 13.0)
   rspec (~> 3.0)
 
