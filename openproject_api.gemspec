@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
 	spec.version       = OpenprojectApi::VERSION
 	spec.authors       = ['expeehaa']
 	spec.email         = ['expeehaa@outlook.com']
-
+	spec.license       = 'MIT'
 	spec.summary       = %q{Ruby interface for the OpenProject API.}
 	spec.homepage      = 'https://github.com/expeehaa/openproject_api'
 	spec.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
 
 	# Specify which files should be added to the gem when it is released.
 	# The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-	spec.files         = Dir['lib/**/*.rb', 'README.adoc']
+	spec.files         = Dir['lib/**/*.rb', 'README.adoc', 'LICENSE']
 	spec.bindir        = 'exe'
 	spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
 	spec.require_paths = ['lib']
