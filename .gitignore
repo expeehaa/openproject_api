@@ -1,5 +1,4 @@
-syntax: glob
-# Keep this file in sync with .gitignore.
+# Keep this file in sync with .hgignore.
 
 .bundle
 .yardoc
