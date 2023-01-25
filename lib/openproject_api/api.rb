@@ -14,11 +14,11 @@ module OpenprojectApi
 			self.apikey   = apikey
 		end
 		
-		def request(resource, query: {}, &block)
+		def request(resource, query: {})
 			uri = URI.join(endpoint, resource)
 			uri.query = URI.encode_www_form(query)
 			
-			response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme=='https') do |http|
+			response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
 				request = yield(uri)
 				
 				request.basic_auth('apikey', apikey)

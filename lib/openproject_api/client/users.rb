@@ -14,7 +14,7 @@ module OpenprojectApi
 			end
 			
 			def create_user(body, *args)
-				post("/api/v3/users", body, *args)
+				post('/api/v3/users', body, *args)
 			end
 			
 			def delete_user(user_id, *args)

@@ -2,7 +2,7 @@ require 'openproject_api/api'
 
 module OpenprojectApi
 	class Client < Api
-		Dir[File.expand_path('client/*.rb', __dir__)].each do |f|
+		Dir[File.expand_path('client/*.rb', __dir__)].sort.each do |f|
 			require f
 		end
 		
