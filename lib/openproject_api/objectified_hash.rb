@@ -5,9 +5,21 @@ module OpenprojectApi
 			if hash.is_a?(Hash)
 				@hash = hash
 				@data = hash.each_with_object({}) do |(key, value), data|
-					value          = self.class.new(value) if value.is_a? Hash
-					value          = value.map { |v| v.is_a?(Hash) ? self.class.new(v) : v } if value.is_a? Array
-					data[key.to_s] = value
+					data[key.to_s] =
+						case value
+							when Hash
+								self.class.new(value)
+							when Array
+								value.map do |element|
+									if element.is_a?(Hash)
+										self.class.new(element)
+									else
+										element
+									end
+								end
+							else
+								value
+						end
 				end
 			else
 				raise ArgumentError, "Expected Hash, got #{hash.inspect}."
