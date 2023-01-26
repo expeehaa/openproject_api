@@ -16,4 +16,6 @@ Gem::Specification.new do |spec|
 	
 	spec.files         = Dir['lib/**/*.rb', 'README.adoc', 'LICENSE']
 	spec.require_paths = ['lib']
+	
+	spec.add_dependency 'api_frame', '~> 0.1.1'
 end
