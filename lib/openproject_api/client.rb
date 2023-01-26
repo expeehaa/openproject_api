@@ -1,3 +1,4 @@
+require 'base64'
 require 'uri'
 require 'net/https'
 require 'json'
@@ -7,11 +8,10 @@ require 'openproject_api/objectified_hash'
 module OpenprojectApi
 	class Client
 		attr_accessor :endpoint
-		attr_accessor :apikey
 		
 		def initialize(endpoint:, apikey:)
-			self.endpoint = endpoint
-			self.apikey   = apikey
+			self.endpoint         = endpoint
+			@authorization_header = "Basic #{Base64.strict_encode64("apikey:#{apikey}")}"
 		end
 		
 		def request(resource, query: {})
@@ -21,7 +21,7 @@ module OpenprojectApi
 			response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
 				request = yield(uri)
 				
-				request.basic_auth('apikey', apikey)
+				request['Authorization'] = @authorization_header
 				
 				http.request(request)
 			end
