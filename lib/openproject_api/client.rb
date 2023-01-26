@@ -1,265 +1,85 @@
 require 'base64'
-require 'uri'
-require 'net/https'
-require 'json'
+require 'api_frame'
 
 require 'openproject_api/objectified_hash'
 
 module OpenprojectApi
 	class Client
-		attr_accessor :endpoint
+		include ApiFrame::EndpointMethods
+		
+		attr_reader :base_uri
 		
 		def initialize(endpoint:, apikey:)
-			self.endpoint         = endpoint
+			@base_uri             = URI(endpoint)
 			@authorization_header = "Basic #{Base64.strict_encode64("apikey:#{apikey}")}"
 		end
 		
-		def request(resource, query: {})
-			uri = URI.join(endpoint, resource)
-			uri.query = URI.encode_www_form(query)
-			
-			response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
-				request = yield(uri)
-				
-				request['Authorization'] = @authorization_header
-				
-				http.request(request)
-			end
-			
-			if response.is_a?(Net::HTTPSuccess)
-				ObjectifiedHash.new(JSON.parse(response.body))
-			else
-				response.error!
+		def default_headers
+			{
+				'Authorization' => @authorization_header,
+			}
+		end
+		
+		def default_response_parser
+			proc do |response|
+				OpenprojectApi::ObjectifiedHash.new(JSON.parse(response.body))
 			end
 		end
 		
-		def get(resource, *args)
-			request(resource, *args) do |uri|
-				Net::HTTP::Get.new(uri.request_uri)
-			end
-		end
+		define_endpoint :projects,                                    method: :get,    endpoint: proc {                               '/api/v3/projects'                                                       }
+		define_endpoint :project,                                     method: :get,    endpoint: proc { |project_id                 | "/api/v3/projects/#{project_id}"                                         }
+		define_endpoint :update_project,                              method: :patch,  endpoint: proc { |project_id                 | "/api/v3/projects/#{project_id}"                                         }
+		define_endpoint :create_project,                              method: :get,    endpoint: proc {                               '/api/v3/projects'                                                       }
+		define_endpoint :delete_project,                              method: :delete, endpoint: proc { |project_id                 | "/api/v3/projects/#{project_id}"                                         }
+		define_endpoint :project_types,                               method: :get,    endpoint: proc { |project_id                 | "/api/v3/projects/#{project_id}/types"                                   }
+		define_endpoint :project_available_parent_project_candidates, method: :get,    endpoint: proc {                               '/api/v3/projects/available_parent_projects'                             }
 		
-		def post(resource, body, *args)
-			request(resource, *args) do |uri|
-				Net::HTTP::Post.new(uri.request_uri).tap do |request|
-					request['Content-Type'] = 'application/json'
-					request['Accept'      ] = 'application/json'
-					request.body            = body.to_json
-				end
-			end
-		end
+		define_endpoint :relations,                                   method: :get,    endpoint: proc {                               '/api/v3/relations'                                                      }
+		define_endpoint :relation,                                    method: :get,    endpoint: proc { |relation_id                | "/api/v3/relations/#{relation_id}"                                       }
+		define_endpoint :update_relation,                             method: :patch,  endpoint: proc { |relation_id                | "/api/v3/relations/#{relation_id}"                                       }
+		define_endpoint :delete_relation,                             method: :delete, endpoint: proc { |relation_id                | "/api/v3/relations/#{relation_id}"                                       }
 		
-		def patch(resource, body, *args)
-			request(resource, *args) do |uri|
-				Net::HTTP::Patch.new(uri.request_uri).tap do |request|
-					request['Content-Type'] = 'application/json'
-					request['Accept'      ] = 'application/json'
-					request.body            = body.to_json
-				end
-			end
-		end
+		define_endpoint :root,                                        method: :get,    endpoint: proc {                               '/api/v3'                                                                }
 		
-		def delete(resource, *args)
-			request(resource, *args) do |uri|
-				Net::HTTP::Delete.new(uri.request_uri)
-			end
-		end
+		define_endpoint :statuses,                                    method: :get,    endpoint: proc {                               '/api/v3/statuses'                                                       }
+		define_endpoint :status,                                      method: :get,    endpoint: proc { |status_id                  | "/api/v3/statuses/#{status_id}"                                          }
 		
+		define_endpoint :time_entries,                                method: :get,    endpoint: proc {                               '/api/v3/time_entries'                                                   }
+		define_endpoint :time_entry,                                  method: :get,    endpoint: proc { |time_entry_id              | "/api/v3/time_entries/#{time_entry_id}"                                  }
+		define_endpoint :update_time_entry,                           method: :patch,  endpoint: proc { |time_entry_id              | "/api/v3/time_entries/#{time_entry_id}"                                  }
+		define_endpoint :create_time_entry,                           method: :post,   endpoint: proc {                               '/api/v3/time_entries'                                                   }
+		define_endpoint :delete_time_entry,                           method: :delete, endpoint: proc { |time_entry_id              | "/api/v3/time_entries/#{time_entry_id}"                                  }
+		define_endpoint :time_entries_available_projects,             method: :get,    endpoint: proc {                               '/api/v3/time_entries/available_projects'                                }
 		
-		def projects(*args)
-			get('/api/v3/projects', *args)
-		end
+		define_endpoint :types,                                       method: :get,    endpoint: proc {                               '/api/v3/types'                                                          }
+		define_endpoint :type,                                        method: :get,    endpoint: proc { |type_id                    | "/api/v3/types/#{type_id}"                                               }
 		
-		def project(project_id, *args)
-			get("/api/v3/projects/#{project_id}", *args)
-		end
+		define_endpoint :my_preferences,                              method: :get,    endpoint: proc {                               '/api/v3/my_preferences'                                                 }
+		define_endpoint :update_my_preferences,                       method: :patch,  endpoint: proc {                               '/api/v3/my_preferences'                                                 }
 		
-		def update_project(project_id, body, *args)
-			patch("/api/v3/projects/#{project_id}", body, *args)
-		end
+		define_endpoint :users,                                       method: :get,    endpoint: proc {                               '/api/v3/users'                                                          }
+		define_endpoint :user,                                        method: :get,    endpoint: proc { |user_id                    | "/api/v3/users/#{user_id}"                                               }
+		define_endpoint :update_user,                                 method: :patch,  endpoint: proc { |user_id                    | "/api/v3/users/#{user_id}"                                               }
+		define_endpoint :create_user,                                 method: :post,   endpoint: proc {                               '/api/v3/users'                                                          }
+		define_endpoint :delete_user,                                 method: :delete, endpoint: proc { |user_id                    | "/api/v3/users/#{user_id}"                                               }
+		define_endpoint :lock_user,                                   method: :post,   endpoint: proc { |user_id                    | "/api/v3/users/#{user_id}/lock"                                          }
+		define_endpoint :unlock_user,                                 method: :delete, endpoint: proc { |user_id                    | "/api/v3/users/#{user_id}/lock"                                          }
 		
-		def create_project(body, *args)
-			get('/api/v3/projects', body, *args)
-		end
-		
-		def delete_project(project_id, *args)
-			delete("/api/v3/projects/#{project_id}", *args)
-		end
-		
-		def project_types(project_id, *args)
-			get("/api/v3/projects/#{project_id}/types", *args)
-		end
-		
-		def project_available_parent_project_candidates(*args)
-			get('/api/v3/projects/available_parent_projects', *args)
-		end
-		
-		
-		def relations(*args)
-			get('/api/v3/relations', *args)
-		end
-		
-		def relation(relation_id, *args)
-			get("/api/v3/relations/#{relation_id}", *args)
-		end
-		
-		def update_relation(relation_id, body, *args)
-			patch("/api/v3/relations/#{relation_id}", body, *args)
-		end
-		
-		def delete_relation(relation_id, *args)
-			delete("/api/v3/relations/#{relation_id}", *args)
-		end
-		
-		
-		def root(*args)
-			get('/api/v3', *args)
-		end
-		
-		
-		def statuses(*args)
-			get('/api/v3/statuses', *args)
-		end
-		
-		def status(status_id, *args)
-			get("/api/v3/statuses/#{status_id}", *args)
-		end
-		
-		
-		def time_entries(*args)
-			get('/api/v3/time_entries', *args)
-		end
-		
-		def time_entry(time_entry_id, *args)
-			get("/api/v3/time_entries/#{time_entry_id}", *args)
-		end
-		
-		def update_time_entry(time_entry_id, body, *args)
-			patch("/api/v3/time_entries/#{time_entry_id}", body, *args)
-		end
-		
-		def create_time_entry(body, *args)
-			post('/api/v3/time_entries', body, *args)
-		end
-		
-		def delete_time_entry(time_entry_id, *args)
-			delete("/api/v3/time_entries/#{time_entry_id}", *args)
-		end
-		
-		def time_entries_available_projects(*args)
-			get('/api/v3/time_entries/available_projects', *args)
-		end
-		
-		
-		def types(*args)
-			get('/api/v3/types', *args)
-		end
-		
-		def type(type_id, *args)
-			get("/api/v3/types/#{type_id}", *args)
-		end
-		
-		
-		def my_preferences(*args)
-			get('/api/v3/my_preferences', *args)
-		end
-		
-		def update_my_preferences(body, *args)
-			patch('/api/v3/my_preferences', body, *args)
-		end
-		
-		
-		def users(*args)
-			get('/api/v3/users', *args)
-		end
-		
-		def user(user_id, *args)
-			get("/api/v3/users/#{user_id}", *args)
-		end
-		
-		def update_user(user_id, body, *args)
-			patch("/api/v3/users/#{user_id}", body, *args)
-		end
-		
-		def create_user(body, *args)
-			post('/api/v3/users', body, *args)
-		end
-		
-		def delete_user(user_id, *args)
-			delete("/api/v3/users/#{user_id}", *args)
-		end
-		
-		def lock_user(user_id, *args)
-			post("/api/v3/users/#{user_id}/lock", *args)
-		end
-		
-		def unlock_user(user_id, *args)
-			delete("/api/v3/users/#{user_id}/lock", *args)
-		end
-		
-		
-		def work_packages(*args)
-			get('/api/v3/work_packages', *args)
-		end
-		
-		def work_package(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}", *args)
-		end
-		
-		def update_work_package(work_package_id, body, *args)
-			patch("/api/v3/work_packages/#{work_package_id}", body, *args)
-		end
-		
-		def create_work_package(body, *args)
-			post('/api/v3/work_packages', body, *args)
-		end
-		
-		def delete_work_package(work_package_id, *args)
-			delete("/api/v3/work_packages/#{work_package_id}", *args)
-		end
-		
-		def work_package_relations(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/relations", *args)
-		end
-		
-		def add_work_package_relation(work_package_id, body, *args)
-			post("/api/v3/work_packages/#{work_package_id}/relations", body, *args)
-		end
-		
-		def work_package_available_relation_candidates(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/available_relation_candidates", *args)
-		end
-		
-		def work_package_watchers(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/watchers", *args)
-		end
-		
-		def add_work_package_watcher(work_package_id, body, *args)
-			post("/api/v3/work_packages/#{work_package_id}/watchers", body, *args)
-		end
-		
-		def delete_work_package_watcher(work_package_id, watcher_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/watchers/#{watcher_id}", *args)
-		end
-		
-		def work_package_available_watchers(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/available_watchers", *args)
-		end
-		
-		def work_package_activities(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/activities", *args)
-		end
-		
-		def add_work_package_activity(work_package_id, body, *args)
-			post("/api/v3/work_packages/#{work_package_id}/activities", body, *args)
-		end
-		
-		def work_package_available_assignees(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/available_assignees", *args)
-		end
-		
-		def work_package_available_responsibles(work_package_id, *args)
-			get("/api/v3/work_packages/#{work_package_id}/available_responsibles", *args)
-		end
+		define_endpoint :work_packages,                               method: :get,    endpoint: proc {                               '/api/v3/work_packages'                                                  }
+		define_endpoint :work_package,                                method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}"                               }
+		define_endpoint :update_work_package,                         method: :patch,  endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}"                               }
+		define_endpoint :create_work_package,                         method: :post,   endpoint: proc {                               '/api/v3/work_packages'                                                  }
+		define_endpoint :delete_work_package,                         method: :delete, endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}"                               }
+		define_endpoint :work_package_relations,                      method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/relations"                     }
+		define_endpoint :add_work_package_relation,                   method: :post,   endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/relations"                     }
+		define_endpoint :work_package_available_relation_candidates,  method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/available_relation_candidates" }
+		define_endpoint :work_package_watchers,                       method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/watchers"                      }
+		define_endpoint :add_work_package_watcher,                    method: :post,   endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/watchers"                      }
+		define_endpoint :delete_work_package_watcher,                 method: :get,    endpoint: proc { |work_package_id, watcher_id| "/api/v3/work_packages/#{work_package_id}/watchers/#{watcher_id}"        }
+		define_endpoint :work_package_available_watchers,             method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/available_watchers"            }
+		define_endpoint :work_package_activities,                     method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/activities"                    }
+		define_endpoint :add_work_package_activity,                   method: :post,   endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/activities"                    }
+		define_endpoint :work_package_available_assignees,            method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/available_assignees"           }
+		define_endpoint :work_package_available_responsibles,         method: :get,    endpoint: proc { |work_package_id            | "/api/v3/work_packages/#{work_package_id}/available_responsibles"        }
 	end
 end
