@@ -2,11 +2,15 @@ module OpenprojectApi
 	# Slightly modified version from https://github.com/NARKOZ/gitlab/blob/3dd41722670570069693cc9b84c73f475d95e6be/lib/gitlab/objectified_hash.rb
 	class ObjectifiedHash
 		def initialize(hash)
-			@hash = hash
-			@data = hash.each_with_object({}) do |(key, value), data|
-				value          = self.class.new(value) if value.is_a? Hash
-				value          = value.map { |v| v.is_a?(Hash) ? self.class.new(v) : v } if value.is_a? Array
-				data[key.to_s] = value
+			if hash.is_a?(Hash)
+				@hash = hash
+				@data = hash.each_with_object({}) do |(key, value), data|
+					value          = self.class.new(value) if value.is_a? Hash
+					value          = value.map { |v| v.is_a?(Hash) ? self.class.new(v) : v } if value.is_a? Array
+					data[key.to_s] = value
+				end
+			else
+				raise ArgumentError, "Expected Hash, got #{hash.inspect}."
 			end
 		end
 		
@@ -16,7 +20,7 @@ module OpenprojectApi
 		alias to_h to_hash
 		
 		def inspect
-			"#<#{self.class}:#{object_id} {hash: #{@hash.inspect}}"
+			"#<#{self.class}:#{object_id} {hash: #{@hash.inspect}}>"
 		end
 		
 		def [](key)
@@ -36,7 +40,7 @@ module OpenprojectApi
 		end
 		
 		def respond_to_missing?(method_name, include_private=false)
-			@hash.keys.map(&:to_sym).include?(method_name.to_sym) || super
+			@hash.keys.map(&:to_sym).include?(method_name) || @data.respond_to?(method_name) || super
 		end
 	end
 end
